@@ -27,8 +27,10 @@ class Student:
         """
         "*** YOUR CODE HERE ***"
         # self.courseUnits = 
+        self.courseUnits = courseUnits
         self.name = name
-        print('Student %s registered' % (name))
+        print('Student {} registered'.format(self.name)  )
+
 
     def getCourseUnits(self, course):
         """
@@ -38,7 +40,10 @@ class Student:
         """
         if course not in self.courseUnits:
             print("Student not registered for", course)
-        "*** YOUR CODE HERE ***"
+            "*** YOUR CODE HERE ***"
+            return None
+        return self.courseUnits[course]
+
 
     def getGPA(self, gradeList):
         """
@@ -48,6 +53,14 @@ class Student:
         courses that this student has registered for
         """
         "*** YOUR CODE HERE ***"
+        total = 0.0
+        total_Units=0.0
+        for course, grade in gradeList:
+            Units=self.getCourseUnits(course)
+            if Units != None:
+              total += Units * grade
+              total_Units += Units
+        return total / total_Units
 
     def getName(self):
         return self.name
@@ -56,4 +69,4 @@ class Student:
         return "<Student Name: %s>" % self.getName()
 
     def __repr__(self):
-        return str(self)
+        return str(self)    
