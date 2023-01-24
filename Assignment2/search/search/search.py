@@ -91,7 +91,7 @@ def depthFirstSearch(problem: SearchProblem):
     # https://inst.eecs.berkeley.edu/~cs188/sp20/assets/notes/n1.pdf (pg4)
     # The questions guides to use stack
     #fringe is basically a list of current nodes.vv  
-    ''''
+    '''' Ruby
     The pseudo-code for this implementation could be
     fringe <- Insert(MAKE-NODE(INTIAL-STATE[PROBLEM]))
     loop do
