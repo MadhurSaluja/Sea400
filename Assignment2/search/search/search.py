@@ -87,6 +87,40 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    # The skeleton for the code is found from the pseudo code given in the resource material:
+    # https://inst.eecs.berkeley.edu/~cs188/sp20/assets/notes/n1.pdf (pg4)
+    # The questions guides to use stack
+    #fringe is basically a list of current nodes.vv  
+    ''''
+    The pseudo-code for this implementation could be
+    fringe <- Insert(MAKE-NODE(INTIAL-STATE[PROBLEM]))
+    loop do
+         if fringe is empty then return faliure
+         node <- REMOVE-FRONT(fringe)
+         if GOAL-TEST(problem, STATE[node]) then return node
+         for child-node in expand(state[node]) do
+         fringe <- INSERT(child-node,fringe)
+         end
+    end
+    '''
+    #first assign fringe the data structure to store the partial plans
+    fringe=util.stack
+    #make list to store the visited nodes
+    VisitedNodes=[]
+    #make childstack to store the children nodes
+    childstack=util.stack
+    #give fringe the value of the frontier
+    fringe.push(problem.getStartState)
+    while not fringe.empty():
+        tmp=fringe.pop()
+        VisitedNodes.append(tmp)
+        if problem.isGoalState(tmp):
+            return tmp
+        
+
+
+
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
