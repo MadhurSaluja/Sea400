@@ -93,6 +93,8 @@ def depthFirstSearch(problem: SearchProblem):
         loop do
             if fringe is empty then return faliure
             node <- Remove-Front(fringe)
+            visited<-node
+
             if Goal-Test(problem, STATE[node]) then return node 
             for child node in Expand(STATE[node], problem) do
             fringe<-INSERT(child,fringe)
@@ -149,7 +151,7 @@ def breadthFirstSearch(problem: SearchProblem):
     Expanded=[]
 
     while not Fringe.isEmpty():
-        frontier, backtrack =Fringe.pop()
+        frontier,backtrack=Fringe.pop()
         if frontier not in Expanded:
             Expanded.append(frontier)
             if problem.isGoalState(frontier):
