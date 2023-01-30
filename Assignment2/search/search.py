@@ -113,22 +113,25 @@ def depthFirstSearch(problem: SearchProblem):
     Fringe.push(Node)
     #check if there are any nodes in the fringe 
     while  not Fringe.isEmpty():
-        # if there is a node then move it out of the stack to work on it
         frontier,backtrack=Fringe.pop()
-        expanded.append(frontier)
-        # check if the frontier is the goal
-        if problem.isGoalState(frontier):
-            return backtrack
-        else:
-            #Get the successors
-            successors = problem.getSuccessors(frontier[0])
-            #make sure the successors arent already expanded
-            for successor in successors:
-                if(successor not in expanded):
-                    
-                    Fringe.push((successor[0],backtrack+ [successor[1]]))
-    return []            
 
+        #chech if the node is already expanded or not
+        if frontier not in expanded:
+         # if there is a node then move it out of the stack to work on it
+         expanded.append(frontier)
+         # check if the frontier is the goal
+         if problem.isGoalState(frontier):
+             return backtrack
+        else:
+             #Get the successors
+             successors = problem.getSuccessors(frontier)
+             #make sure the successors arent already expanded
+             for successor in successors:
+                 if(not successor  in expanded):
+                     
+                     Fringe.push((successor[0],backtrack+ [successor[1]]))
+    return []           
+ 
 
         
 
@@ -140,7 +143,9 @@ def breadthFirstSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     #keeping the pseudocode from the dfs search (excpet use Queue)
     Fringe=util.Queue()
-    Fringe.push((problem.getStartState(),[]))
+    child_nodes=[]
+    Node=((problem.getStartState(),child_nodes))
+    Fringe.push(Node)
     Expanded=[]
 
     while not Fringe.isEmpty():
@@ -152,7 +157,8 @@ def breadthFirstSearch(problem: SearchProblem):
             else:
                 successors=problem.getSuccessors(frontier)
                 for successor in successors:
-                    Fringe.push((successor[0],backtrack+ [successor[1]]))
+                    if(not successor  in Expanded):
+                     Fringe.push((successor[0],backtrack+ [successor[1]]))
     
     return []
 
