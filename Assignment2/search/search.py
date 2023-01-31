@@ -170,46 +170,29 @@ def breadthFirstSearch(problem: SearchProblem):
   #  util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
-    reached = {}      # has the nodes which are popped from queue
-    result = []       # has the listed directions for pacman to reach to goal state
-    queue = util.PriorityQueue()  # has nodes in the fringe list, cost and direction
-    parents = {}   # has nodes and their parents
-    cost = {}      # has nodes and their costs
+    Fringe=util.PriorityQueue()
+    child_nodes=[]
+    start_cost = 0
+    Node=(problem.getStartState(),child_nodes, start_cost)
+    Fringe.push(Node, start_cost)
+    Expanded=[]
 
-    start = problem.getStartState()
-    queue.push((start, 'Undefined', 0), 0)
-    reached[start] = 'Undefined'
-    cost[start] = 0    #cost of start state is zero
+    while not Fringe.isEmpty():
+        frontier= Fringe.pop()
+        if frontier[0] not in Expanded:
+            Expanded.append(frontier[0])
+            if problem.isGoalState(frontier[0]):
+                return frontier[1]
+            else:
+                successors=problem.getSuccessors(frontier[0])
+                for successor in successors:
+                    if not successor[0]  in Expanded:
+                        next_successor = frontier[1] + [successor[1]]
+                        cost = frontier[2] + successor[2]
+                        Fringe.push((successor[0],next_successor, cost), cost)
+                        # Expanded.append(successor[0])
 
-    if problem.isGoalState(start):
-        return result
-    
-    goal = False;
-    while(goal != True and queue.isEmpty()  != True):
-        # loop while queue is not null and goal is not yet reached
-        node = queue.pop()
-        reached[node[0]] = node[1]
-        if problem.isGoalState(node[0]):
-            node_result = node[0]
-            goal = True
-            break
-        # further expanding node
-        for key in problem.getSuccessors(node[0]):
-            if key[0] not in reached.keys():
-                priority = node[2] + key[2]
-                if key[0] in cost.keys():
-                    if cost[key[0]] <= priority:
-                        continue
-                queue.push((key[0], key[1], priority), priority)
-                cost[key[0]] = priority
-                parents[key[0]] = node[0]
-    # storing and searching for path
-    while(node_result in parents.keys()):
-        node_result_initial = parents[node_result]
-        result.insert(0, reached[node_result])
-        node_result = node_result_initial
-
-    return result
+    return []
 
 def nullHeuristic(state, problem=None):
     """
