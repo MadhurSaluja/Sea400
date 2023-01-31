@@ -131,15 +131,16 @@ def depthFirstSearch(problem: SearchProblem):
              successors = problem.getSuccessors(frontier[0])
              #make sure the successors aren't already expanded
              for successor in successors:
-                 if not successor in expanded:
+                 if not successor[0] in expanded:
                     Fringe.push((successor[0],frontier[1]+ [successor[1]]))
-        return []
+   
+    return []
  
 
 
 
 
-# rEFERENCE :: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
+# REFERENCE :: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
@@ -162,7 +163,7 @@ def breadthFirstSearch(problem: SearchProblem):
                 if not successor[0]  in Expanded:
                  Fringe.push((successor[0],frontier[1]+ [successor[1]]))
                  Expanded.append(successor[0])
-    
+
     return []
 
             
