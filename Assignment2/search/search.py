@@ -101,44 +101,46 @@ def depthFirstSearch(problem: SearchProblem):
             end
         end
     """
-    #Util.Stack should be used as the data structure 
+#Util.Stack should be used as the data structure 
     # as it has a the same concept of LIFO, also there should be 
     # a stack for expanded node; and a backtrack to successfull expansion
     Fringe=util.Stack()
     expanded=[] #To keep track of all expanded nodes
     child_nodes=[]
     #give the frontier(fringe) it's first node;
-    #Node: define a data structure with state,name, parent, action
+    #Node: define a data structure with state,name, parent, action. For simplicity I 
+    #chose to only have state and path to the goal as a tuple as that is only required for that.
+
     # inspired by https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
-    Node=((problem.getStartState(),child_nodes))
+    Node=((problem.getStartState(),child_nodes)) # The tuple consist of state and list of expanded paths
     #push the Node 
     Fringe.push(Node)
     #check if there are any nodes in the fringe 
     while  not Fringe.isEmpty():
-        frontier,backtrack=Fringe.pop()
+        frontier=Fringe.pop()
+        # if there is a node then move it out of the stack to work on it
+        # append the state of a frontier to the expanded list
+        #so that state shouldn't be repeated.
 
-        #chech if the node is already expanded or not
-        if frontier not in expanded:
-         # if there is a node then move it out of the stack to work on it
-         expanded.append(frontier)
+        expanded.append(frontier[0])
          # check if the frontier is the goal
-         if problem.isGoalState(frontier):
-             return backtrack
+        if problem.isGoalState(frontier[0]):
+            return frontier[1]
         else:
-             #Get the successors
-             successors = problem.getSuccessors(frontier)
-             #make sure the successors arent already expanded
+             #Get the successors from the current state
+             successors = problem.getSuccessors(frontier[0])
+             #make sure the successors aren't already expanded
              for successor in successors:
-                 if(not successor  in expanded):
-                     
-                     Fringe.push((successor[0],backtrack+ [successor[1]]))
-    return []           
+                 if not successor[0] in expanded:
+                    Fringe.push((successor[0],frontier[1]+ [successor[1]]))
+   
+    return []
  
 
-        
 
 
-# rEFERENCE :: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
+
+# REFERENCE :: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
@@ -151,17 +153,17 @@ def breadthFirstSearch(problem: SearchProblem):
     Expanded=[]
 
     while not Fringe.isEmpty():
-        frontier,backtrack=Fringe.pop()
-        if frontier not in Expanded:
-            Expanded.append(frontier)
-            if problem.isGoalState(frontier):
-                return backtrack
-            else:
-                successors=problem.getSuccessors(frontier)
-                for successor in successors:
-                    if(not successor  in Expanded):
-                     Fringe.push((successor[0],backtrack+ [successor[1]]))
-    
+        frontier= Fringe.pop()
+        Expanded.append(frontier[0])
+        if problem.isGoalState(frontier[0]):
+            return frontier[1]
+        else:
+            successors=problem.getSuccessors(frontier[0])
+            for successor in successors:
+                if not successor[0]  in Expanded:
+                 Fringe.push((successor[0],frontier[1]+ [successor[1]]))
+                 Expanded.append(successor[0])
+
     return []
 
             
@@ -219,7 +221,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    Fringe=util.PriorityQueue()
+    child_nodes=[]
+    start_cost = 0
+    Node=(problem.getStartState(),child_nodes, start_cost)
+    Fringe.push(Node, start_cost)
+    Expanded=[]
+
+    while not Fringe.isEmpty():
+        frontier= Fringe.pop()
+        if frontier[0] not in Expanded:
+            Expanded.append(frontier[0])
+            if problem.isGoalState(frontier[0]):
+                return frontier[1]
+            else:
+                successors=problem.getSuccessors(frontier[0])
+                for successor in successors:
+                    if not successor[0]  in Expanded:
+                        next_successor = frontier[1] + [successor[1]]
+                        cost = frontier[2] + successor[2]
+                        heuristiccost = cost + heuristic(successor[0], problem)
+                        Fringe.push((successor[0],next_successor, cost), heuristiccost)
+                        # Expanded.append(successor[0])
+
+    return []
+
 
 
 # Abbreviations

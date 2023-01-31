@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "args": ["-q", "q1"],
+            "args": ["-q", "q2"],
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
