@@ -10,7 +10,7 @@
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
-# t
+
 
 """
 In search.py, you will implement generic search algorithms which are called by
@@ -168,9 +168,46 @@ def breadthFirstSearch(problem: SearchProblem):
   #  util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    reached = {}      # has the nodes which are popped from queue
+    result = []       # has the listed directions for pacman to reach to goal state
+    queue = util.PriorityQueue()  # has nodes in the fringe list, cost and direction
+    parents = {}   # has nodes and their parents
+    cost = {}      # has nodes and their costs
+
+    start = problem.getStartState()
+    queue.push((start, 'Undefined', 0), 0)
+    reached[start] = 'Undefined'
+    cost[start] = 0    #cost of start state is zero
+
+    if problem.isGoalState(start):
+        return result
+    
+    goal = False;
+    while(goal != True and queue.isEmpty()  != True):
+        # loop while queue is not null and goal is not yet reached
+        node = queue.pop()
+        reached[node[0]] = node[1]
+        if problem.isGoalState(node[0]):
+            node_result = node[0]
+            goal = True
+            break
+        # further expanding node
+        for key in problem.getSuccessors(node[0]):
+            if key[0] not in reached.keys():
+                priority = node[2] + key[2]
+                if key[0] in cost.keys():
+                    if cost[key[0]] <= priority:
+                        continue
+                queue.push((key[0], key[1], priority), priority)
+                cost[key[0]] = priority
+                parents[key[0]] = node[0]
+    # storing and searching for path
+    while(node_result in parents.keys()):
+        node_result_initial = parents[node_result]
+        result.insert(0, reached[node_result])
+        node_result = node_result_initial
+
+    return result
 
 def nullHeuristic(state, problem=None):
     """
