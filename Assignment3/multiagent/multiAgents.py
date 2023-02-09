@@ -63,19 +63,43 @@ class ReflexAgent(Agent):
         remaining food (newFood) and Pacman position after moving (newPos).
         newScaredTimes holds the number of moves that each ghost will remain
         scared because of Pacman having eaten a power pellet.
-
+     
         Print out these variables to see what you're getting, then combine them
         to create a masterful evaluation function.
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        newPos = successorGameState.getPacmanPosition()
-        newFood = successorGameState.getFood()
+        newPos = successorGameState.getPacmanPosition()  
+        newFood = successorGameState.getFood() 
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-
+  
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # Need to print an evaluation funciton that has an scared state when the food pill is eaten. also the Pacman should be attracted to the food pill
+        # After looking at the mediumClassic layout one thing is certain the food pill should "attract the pacman" i.e it should move towards it.
+        #lets implement that.
+        #First store all possible food locations
+        New_Score=successorGameState.getScore()
+        score=0
+        foodLocations=newFood.asList() #gives a list of all possible food locations
+        GhostLocations=successorGameState.getGhostPositions()
+        #we need to now find the shortest path to a true food location
+        #list of possible distances from food locations:
+        Possible_Dist_FoodPoint=[ manhattanDistance(newPos, foodLocation) for foodLocation in foodLocations]
+        if len(Possible_Dist_FoodPoint) != 0:
+            Best_Eval_FoodPoint= min(Possible_Dist_FoodPoint)
+        else: Best_Eval_FoodPoint=0
+        Possible_Dist_GhostPos=[ manhattanDistance(newPos, GhostLocation) for GhostLocation in GhostLocations]
+        if len(Possible_Dist_GhostPos)!=0:
+            Best_Eval_GhostPos= min(Possible_Dist_GhostPos)
+        else: Best_Eval_GhostPos=0
+        if action== 'Stop' :
+            score-=50
+
+#        Possible_Dist_Scared_GhostPos=[ manhattanDistance(newPos, ScaredLocation) for ScaredLocation in]
+
+        New_Score += ( score+ 1/(1+Best_Eval_FoodPoint)- 1/(1+Best_Eval_GhostPos))
+        return New_Score
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
