@@ -63,17 +63,17 @@ class ReflexAgent(Agent):
         remaining food (newFood) and Pacman position after moving (newPos).
         newScaredTimes holds the number of moves that each ghost will remain
         scared because of Pacman having eaten a power pellet.
-     
+
         Print out these variables to see what you're getting, then combine them
         to create a masterful evaluation function.
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        newPos = successorGameState.getPacmanPosition()  
-        newFood = successorGameState.getFood() 
+        newPos = successorGameState.getPacmanPosition()
+        newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-  
+
         "*** YOUR CODE HERE ***"
         # Need to print an evaluation funciton that has an scared state when the food pill is eaten. also the Pacman should be attracted to the food pill
         # After looking at the mediumClassic layout one thing is certain the food pill should "attract the pacman" i.e it should move towards it.
@@ -160,7 +160,49 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        pacman_agent = 0
+        def maximum_agent(gameState, depth):
+            if gameState.isWin() or gameState.isLose():  # if at win state or lose state then return thr score
+                return gameState.getScore()
+            actions = gameState.getLegalActions(pacman_agent)   # getLegalActions returns a list of legal actions which are stored in the list "actions", the first action will be of the pacman_agent
+            best_score = float("-inf")
+            score = best_score
+            best_action = Directions.STOP
+            for action in actions:
+                score = exp_agent(gameState.generateSuccessor(pacman_agent, action), depth, 1)
+                if score > best_score:
+                    best_score = score
+                    best_action = action
+            if depth == 0:
+                return best_action
+            else:
+                return best_score
+        
+        def exp_agent(gameState, depth, ghost):
+            if gameState.isLose() or gameState.isWin():
+                return gameState.getScore()
+            next_ghost = ghost + 1
+            if ghost == gameState.getNumAgents() - 1:
+                # Although I call this variable next_ghost, at this point we are referring to a pacman agent.
+                # I never changed the variable name and now I feel bad. That's why I am writing this guilty comment :(
+                next_ghost = pacman_agent
+            actions = gameState.getLegalActions(ghost)
+            best_score = float("inf")
+            score = best_score
+            for action in actions:
+                if next_ghost == pacman_agent: # We are on the last ghost and it will be Pacman's turn next.
+                    if depth == self.depth - 1:
+                        score = self.evaluationFunction(gameState.generateSuccessor(ghost, action))
+                    else:
+                        score = maximum_agent(gameState.generateSuccessor(ghost, action), depth + 1)
+                else:
+                    score = exp_agent(gameState.generateSuccessor(ghost, action), depth, next_ghost)
+                if score < best_score:
+                    best_score = score
+            return best_score
+        return maximum_agent(gameState, 0)
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
